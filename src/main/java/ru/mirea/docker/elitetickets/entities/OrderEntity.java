@@ -22,7 +22,7 @@ public class OrderEntity {
     @UuidGenerator
     private UUID id;
 
-    @OneToOne
+    @ManyToOne
     private UserEntity owner;
 
     @OneToOne

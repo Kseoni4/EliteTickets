@@ -23,7 +23,7 @@ public class TicketEntity {
     @UuidGenerator
     private UUID id;
 
-    @OneToOne
+    @ManyToOne
     private UserEntity owner;
 
     @ManyToOne
