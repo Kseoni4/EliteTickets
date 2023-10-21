@@ -8,6 +8,8 @@ import lombok.NoArgsConstructor;
 import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.UuidGenerator;
 
+import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.UUID;
 
 @Entity
@@ -24,5 +26,20 @@ public class EventEntity {
 
     @Column
     private String eventName;
+
+    @Column
+    private LocalDate eventDate;
+
+    @Column
+    private LocalTime eventTime;
+
+    @Column
+    private String eventPlace;
+
+    @Column
+    private String eventMinAge;
+
+    @Column
+    private boolean isActive;
 
 }

@@ -7,7 +7,9 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.UuidGenerator;
+import ru.mirea.docker.elitetickets.enums.PaymentStatus;
 
+import java.time.LocalDateTime;
 import java.util.UUID;
 
 @Entity
@@ -27,5 +29,11 @@ public class OrderEntity {
 
     @OneToOne
     private TicketEntity ticket;
+
+    @Column
+    private LocalDateTime purchaseDate;
+
+    @Enumerated(EnumType.STRING)
+    private PaymentStatus paymentStatus;
 
 }
