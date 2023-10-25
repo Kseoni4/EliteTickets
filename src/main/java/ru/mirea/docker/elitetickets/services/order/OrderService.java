@@ -1,4 +1,4 @@
-package ru.mirea.docker.elitetickets.services;
+package ru.mirea.docker.elitetickets.services.order;
 
 import ru.mirea.docker.elitetickets.dto.models.OrderModel;
 import ru.mirea.docker.elitetickets.dto.requests.OrderRequest;

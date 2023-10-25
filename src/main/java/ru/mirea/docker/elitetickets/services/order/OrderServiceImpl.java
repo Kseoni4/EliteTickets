@@ -1,4 +1,4 @@
-package ru.mirea.docker.elitetickets.services;
+package ru.mirea.docker.elitetickets.services.order;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -16,7 +16,6 @@ import ru.mirea.docker.elitetickets.enums.PaymentStatus;
 import ru.mirea.docker.elitetickets.enums.TicketType;
 
 import java.util.List;
-import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
@@ -29,7 +28,7 @@ public class OrderServiceImpl implements OrderService {
 
     @Override
     public OrderModel createOrder(OrderRequest request) {
-        UserEntity user = userDao.getUserByEmail(request.getEmail());
+        UserEntity user = userDao.getUserEntityByEmail(request.getEmail());
 
         EventEntity event = eventDao.getEventFromName(request.getEventName());
 

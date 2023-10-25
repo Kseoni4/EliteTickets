@@ -44,6 +44,7 @@ public class DataInitializer {
                 .password("qwerty123")
                 .role(UserRole.USER)
                 .regType(TypeReg.APP)
+                .emailIsConfirmed(false)
                 .build();
 
        userRepository.save(user);

@@ -5,10 +5,9 @@ import org.springframework.web.bind.annotation.*;
 import ru.mirea.docker.elitetickets.dto.models.OrderModel;
 import ru.mirea.docker.elitetickets.dto.requests.OrderRequest;
 import ru.mirea.docker.elitetickets.dto.response.CreatedOrderResponse;
-import ru.mirea.docker.elitetickets.services.OrderService;
+import ru.mirea.docker.elitetickets.services.order.OrderService;
 
 import java.util.List;
-import java.util.UUID;
 
 @RestController
 @RequestMapping("/v1/orders")

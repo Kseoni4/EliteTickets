@@ -1,9 +1,6 @@
 package ru.mirea.docker.elitetickets.dto.models;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import ru.mirea.docker.elitetickets.entities.EventEntity;
 
 import java.time.LocalDate;
@@ -15,10 +12,14 @@ import java.time.LocalTime;
 @AllArgsConstructor
 public class EventModel {
 
+    @Getter
     private String eventName;
 
+    @Getter
     private LocalDate eventDate;
 
+    @Getter
+    @Setter
     private LocalTime eventTime;
 
     private String eventPlace;
