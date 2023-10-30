@@ -21,7 +21,10 @@ public class UserDao {
     private final PasswordEncoder passwordEncoder;
 
     public UserModel getUserByEmail(String email){
-        return UserModel.fromEntity(userRepository.findByEmail(email).orElseThrow());
+        if(userRepository.findByEmail(email).isPresent()){
+            return UserModel.fromEntity(userRepository.findByEmail(email).get());
+        }
+        return null;
     }
 
     public UserEntity getUserEntityByEmail(String email){
