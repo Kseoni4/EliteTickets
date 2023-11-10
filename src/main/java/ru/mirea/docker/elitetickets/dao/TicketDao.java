@@ -21,4 +21,8 @@ public class TicketDao {
     public List<TicketModel> getAllTicketsByUser(String email){
         return repository.findTicketsByEmail(email).stream().map(TicketModel::fromEntity).toList();
     }
+
+    public List<TicketEntity> getAllTicketEntitiesByUser(String email){
+        return repository.findTicketsByEmail(email);
+    }
 }

@@ -37,6 +37,7 @@ public class OrderServiceImpl implements OrderService {
                 .event(event)
                 .ticketType(TicketType.valueOf(request.getTicketType()))
                 .price(request.getPrice())
+                .isRedeemed(false)
                 .build();
 
         ticket = ticketDao.createTicket(ticket);

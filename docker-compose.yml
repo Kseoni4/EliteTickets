@@ -12,3 +12,11 @@ services:
       - 5432
     ports:
       - 5432:5432
+
+  elite-tickets-mail:
+    container_name: elite-tickets-mail
+    image: bytemark/smtp
+    expose:
+      - 25
+    ports:
+      - "25:25"

@@ -11,6 +11,7 @@ import ru.mirea.docker.elitetickets.repositories.UserRepository;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Component
 @RequiredArgsConstructor
@@ -25,6 +26,10 @@ public class UserDao {
             return UserModel.fromEntity(userRepository.findByEmail(email).get());
         }
         return null;
+    }
+
+    public List<UserEntity> getAllUsers(){
+        return userRepository.findAll();
     }
 
     public UserEntity getUserEntityByEmail(String email){
@@ -48,9 +53,8 @@ public class UserDao {
     }
 
     public boolean validateUser(String email, String password){
-        String hashedPassword = passwordEncoder.encode(password);
         UserEntity user = getUserEntityByEmail(email);
 
-        return user.getPassword().equals(hashedPassword);
+        return passwordEncoder.matches(password, user.getPassword());
     }
 }
