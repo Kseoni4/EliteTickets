@@ -1,0 +1,10 @@
+version: '3'
+
+tasks:
+  build:
+    cmds:
+      - docker build -t elite-tickets-app .
+
+  build-prod:
+    cmds:
+      - docker build -f Dockerfile.prod -t elite-tickets-app .
