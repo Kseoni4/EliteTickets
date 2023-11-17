@@ -1,5 +1,6 @@
 package ru.mirea.docker.elitetickets.controllers.v1;
 
+import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
@@ -10,6 +11,7 @@ import org.springframework.web.bind.annotation.RestController;
 import ru.mirea.docker.elitetickets.dto.models.UserModel;
 import ru.mirea.docker.elitetickets.dto.requests.LoginRequest;
 import ru.mirea.docker.elitetickets.dto.requests.RegisterRequest;
+import ru.mirea.docker.elitetickets.dto.response.LoginResponse;
 import ru.mirea.docker.elitetickets.services.auth.AuthenticationService;
 
 import javax.security.auth.login.CredentialException;
@@ -27,7 +29,9 @@ public class UserController {
     }
 
     @PostMapping("/login")
-    public UserModel login(@RequestBody LoginRequest request, HttpServletRequest servletRequest, HttpServletResponse servletResponse) throws CredentialException {
-        return authenticationService.login(request, servletRequest, servletResponse);
+    public LoginResponse login(@RequestBody LoginRequest request, HttpServletRequest servletRequest, HttpServletResponse servletResponse) throws CredentialException {
+        LoginResponse response = authenticationService.login(request, servletRequest, servletResponse);
+        servletResponse.addCookie(new Cookie("jwt", response.getToken().getToken()));
+        return response;
     }
 }

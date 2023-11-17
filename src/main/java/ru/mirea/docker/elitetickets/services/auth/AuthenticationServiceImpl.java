@@ -9,9 +9,12 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.context.SecurityContextRepository;
 import org.springframework.stereotype.Service;
 import ru.mirea.docker.elitetickets.dao.UserDao;
+import ru.mirea.docker.elitetickets.dto.models.TokenModel;
 import ru.mirea.docker.elitetickets.dto.models.UserModel;
 import ru.mirea.docker.elitetickets.dto.requests.LoginRequest;
 import ru.mirea.docker.elitetickets.dto.requests.RegisterRequest;
+import ru.mirea.docker.elitetickets.dto.response.LoginResponse;
+import ru.mirea.docker.elitetickets.services.security.jwt.JwtService;
 
 import javax.security.auth.login.CredentialException;
 
@@ -21,8 +24,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 
     private final UserDao userDao;
 
-    private final SecurityContextRepository securityContextRepository;
-
+    private final JwtService jwtService;
     @Override
     public UserModel register(RegisterRequest request) {
        if(userDao.getUserByEmail(request.getEmail()) != null){
@@ -40,7 +42,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     }
 
     @Override
-    public UserModel login(LoginRequest request, HttpServletRequest servletRequest, HttpServletResponse servletResponse) throws CredentialException {
+    public LoginResponse login(LoginRequest request, HttpServletRequest servletRequest, HttpServletResponse servletResponse) throws CredentialException {
         if(!userDao.validateUser(request.getEmail(), request.getPassword())){
             throw new CredentialException("Wrong username or password");
         }
@@ -57,8 +59,16 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 
         SecurityContextHolder.setContext(context);
 
-        securityContextRepository.saveContext(context, servletRequest, servletResponse);
+        String userJwt = jwtService.generateToken(user);
 
-        return user;
+        return LoginResponse.builder()
+                .email(user.getEmail())
+                .token(
+                        TokenModel.builder()
+                        .email(user.getEmail())
+                        .token(userJwt)
+                        .build()
+                )
+                .build();
     }
 }

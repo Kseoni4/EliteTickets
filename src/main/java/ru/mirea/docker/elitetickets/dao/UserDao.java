@@ -57,4 +57,8 @@ public class UserDao {
 
         return passwordEncoder.matches(password, user.getPassword());
     }
+
+    public boolean userExistByEmail(String email){
+        return userRepository.findByEmail(email).isPresent();
+    }
 }
