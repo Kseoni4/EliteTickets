@@ -19,6 +19,7 @@ public class ExceptionFilter extends OncePerRequestFilter {
         try{
             filterChain.doFilter(request, response);
         } catch (Exception e){
+            e.printStackTrace();
             ErrorResponse errorResponse = new ErrorResponse(e.getMessage());
 
             response.setStatus(HttpStatus.UNAUTHORIZED.value());

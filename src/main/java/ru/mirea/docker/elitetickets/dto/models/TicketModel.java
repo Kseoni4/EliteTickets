@@ -5,6 +5,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import ru.mirea.docker.elitetickets.entities.TicketEntity;
+import ru.mirea.docker.elitetickets.enums.TicketType;
 
 import java.time.LocalDateTime;
 import java.util.UUID;
@@ -25,6 +26,8 @@ public class TicketModel {
 
     private int price;
 
+    private TicketType ticketType;
+
     private LocalDateTime purchaseDate;
 
     private boolean isRedeemed;
@@ -38,6 +41,7 @@ public class TicketModel {
                 .price(ticket.getPrice())
                 .purchaseDate(ticket.getPurchaseDate())
                 .isRedeemed(ticket.isRedeemed())
+                .ticketType(ticket.getTicketType())
                 .build();
     }
 }

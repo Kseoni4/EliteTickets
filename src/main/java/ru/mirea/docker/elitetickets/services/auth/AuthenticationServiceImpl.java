@@ -38,7 +38,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
                         .birthDate(request.getBirthDate())
                         .build();
 
-       return userDao.registerUser(newUser, request.getPassword());
+       return userDao.registerAppUser(newUser, request.getPassword());
     }
 
     @Override

@@ -7,6 +7,7 @@ import org.springframework.util.ResourceUtils;
 import ru.mirea.docker.elitetickets.dao.TicketDao;
 import ru.mirea.docker.elitetickets.dao.UserDao;
 import ru.mirea.docker.elitetickets.dto.models.EventModel;
+import ru.mirea.docker.elitetickets.dto.models.TicketModel;
 import ru.mirea.docker.elitetickets.dto.models.UserModel;
 import ru.mirea.docker.elitetickets.entities.TicketEntity;
 import ru.mirea.docker.elitetickets.entities.UserEntity;
@@ -88,6 +89,32 @@ public class MailServiceImpl implements MailService{
 
             }
         }
+
+    }
+
+    @Override
+    public void sendTicketLinkToUser(UserModel userModel, TicketModel ticketModel) {
+        try {
+            File file = ResourceUtils.getFile("classpath:static/mail-template/mail-ticket-template.html");
+
+            BufferedReader bufferedReader = new BufferedReader(new FileReader(file));
+
+            String ticketLinkText = bufferedReader.lines().collect(Collectors.joining());
+
+            bufferedReader.close();
+
+            ticketLinkText = ticketLinkText.formatted(
+                        userModel.getFirstName(),
+                        ticketModel.getEventName(),
+                        "http://localhost:8080/api/v1/file/t/"+ticketModel.getTicketId()
+                    );
+
+            sendEmail(userModel.getEmail(), "Покупка билета на событие %s".formatted(ticketModel.getEventName()), ticketLinkText);
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
 
     }
 

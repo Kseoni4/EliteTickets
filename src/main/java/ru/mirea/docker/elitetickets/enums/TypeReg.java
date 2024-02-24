@@ -5,6 +5,7 @@ import jakarta.persistence.Entity;
 
 public enum TypeReg {
 
-    APP
+    APP,
+    YANDEX
 
 }

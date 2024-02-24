@@ -3,9 +3,11 @@ package ru.mirea.docker.elitetickets.controllers.v1;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 import ru.mirea.docker.elitetickets.dto.models.OrderModel;
+import ru.mirea.docker.elitetickets.dto.models.PaymentModel;
 import ru.mirea.docker.elitetickets.dto.requests.OrderRequest;
 import ru.mirea.docker.elitetickets.dto.response.CreatedOrderResponse;
 import ru.mirea.docker.elitetickets.services.order.OrderService;
+import ru.mirea.docker.elitetickets.services.payment.PaymentService;
 
 import java.util.List;
 
@@ -16,13 +18,12 @@ public class OrderController {
 
     private final OrderService orderService;
 
+    private final PaymentService paymentService;
+
     @PostMapping("")
-    public CreatedOrderResponse createOrder(@RequestBody OrderRequest request){
+    public PaymentModel createOrder(@RequestBody OrderRequest request){
        OrderModel orderModel = orderService.createOrder(request);
-       return CreatedOrderResponse.builder()
-               .paymentStatus(orderModel.getPaymentStatus().name())
-               .orderId(orderModel.getOrderId())
-               .build();
+       return paymentService.createPayment(orderModel);
     }
 
     @GetMapping("")

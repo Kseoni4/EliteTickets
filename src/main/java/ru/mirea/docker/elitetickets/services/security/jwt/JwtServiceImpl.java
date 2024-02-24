@@ -57,7 +57,7 @@ public class JwtServiceImpl implements JwtService {
 
     private Date getExpirationDate() {
         Date now = new Date();
-        now.setTime(now.getTime() + 100);
+        now.setTime((now.getTime() + 100) * tokenProperties.getTimeToLive());
         return now;
     }
 

@@ -8,7 +8,7 @@ import org.springframework.scheduling.annotation.Scheduled;
 import ru.mirea.docker.elitetickets.services.mail.MailService;
 
 @Configuration
-@EnableScheduling
+//@EnableScheduling
 @RequiredArgsConstructor
 public class SchedulerConfig {
 

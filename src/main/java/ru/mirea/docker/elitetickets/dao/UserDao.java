@@ -1,6 +1,7 @@
 package ru.mirea.docker.elitetickets.dao;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 import ru.mirea.docker.elitetickets.dto.models.UserModel;
@@ -12,6 +13,7 @@ import ru.mirea.docker.elitetickets.repositories.UserRepository;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 
 @Component
 @RequiredArgsConstructor
@@ -22,10 +24,9 @@ public class UserDao {
     private final PasswordEncoder passwordEncoder;
 
     public UserModel getUserByEmail(String email){
-        if(userRepository.findByEmail(email).isPresent()){
-            return UserModel.fromEntity(userRepository.findByEmail(email).get());
-        }
-        return null;
+        return UserModel.fromEntity(userRepository.findByEmail(email).orElseThrow(
+                () -> new UsernameNotFoundException("User not found")
+        ));
     }
 
     public List<UserEntity> getAllUsers(){
@@ -33,10 +34,21 @@ public class UserDao {
     }
 
     public UserEntity getUserEntityByEmail(String email){
-        return userRepository.findByEmail(email).orElseThrow();
+        return userRepository.findByEmail(email).orElseThrow(
+                () -> new UsernameNotFoundException("User not found")
+        );
     }
 
-    public UserModel registerUser(UserModel userModel, String password){
+
+    public UserModel registerYandexUser(UserModel userModel, String password){
+        return register(userModel, TypeReg.YANDEX, password);
+    }
+
+    public UserModel registerAppUser(UserModel userModel, String password){
+        return register(userModel, TypeReg.APP, password);
+    }
+
+    private UserModel register(UserModel userModel, TypeReg typeReg, String password){
         UserEntity user = UserEntity.builder()
                     .email(userModel.getEmail())
                     .password(passwordEncoder.encode(password))
@@ -44,7 +56,7 @@ public class UserDao {
                     .lastName(userModel.getLastName())
                     .birthDate(userModel.getBirthDate())
                     .role(UserRole.USER)
-                    .regType(TypeReg.APP)
+                    .regType(typeReg)
                     .registrationDate(LocalDateTime.now())
                     .lastAction(LocalDateTime.now())
                     .emailIsConfirmed(false)
@@ -53,9 +65,11 @@ public class UserDao {
     }
 
     public boolean validateUser(String email, String password){
-        UserEntity user = getUserEntityByEmail(email);
+        Optional<String> userPasswordOpt = userRepository.getPasswordByEmail(email);
 
-        return passwordEncoder.matches(password, user.getPassword());
+        String userPassword = userPasswordOpt.orElseThrow();
+
+        return passwordEncoder.matches(password, userPassword);
     }
 
     public boolean userExistByEmail(String email){
