@@ -32,4 +32,4 @@ services:
     container_name: elite-tickets-mail
     image: bytemark/smtp
     ports:
-      - "25:25"
+      - "26:25"
