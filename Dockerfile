@@ -1,4 +1,4 @@
-FROM maven:3.9.6-amazoncorretto-17-al2023 as build
+FROM --platform=linux/amd64 maven:3.9.6-amazoncorretto-17-al2023 as build
 
 WORKDIR /elite-tickets-app
 
