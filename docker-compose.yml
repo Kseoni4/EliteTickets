@@ -5,7 +5,7 @@ services:
     container_name: elite-tickets-app
     image: elite-tickets-app
     ports:
-      - 8090:8080
+      - 8095:8080
     depends_on:
       - elite-tickets-db
       - elite-tickets-redis
