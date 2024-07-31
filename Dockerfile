@@ -1,4 +1,4 @@
-FROM maven:3.9.6-amazoncorretto-17-al2023 as build
+FROM --platform=linux/amd64 maven:3.9.6-amazoncorretto-17-al2023 as build
 
 WORKDIR /elite-tickets-app
 
@@ -8,7 +8,7 @@ COPY src ./src
 
 RUN mvn clean package -DskipTests -Pproduction
 
-FROM eclipse-temurin:21-alpine
+FROM --platform=linux/amd64 eclipse-temurin:21-alpine
 
 COPY --from=build /elite-tickets-app/target/EliteTickets-1.0-SNAPSHOT.jar .
 
