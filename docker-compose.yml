@@ -1,11 +1,12 @@
-version: "3.9"
-
 services:
   elite-tickets-app:
     container_name: elite-tickets-app
     build: .
     ports:
       - 8080:8080
+    environment:
+      - DATABASE_URL=jdbc:postgresql://elite-tickets-db:5432/elite_tickets_db
+      - REDIS_HOST=elite-tickets-redis
     depends_on:
       - elite-tickets-db
       - elite-tickets-redis

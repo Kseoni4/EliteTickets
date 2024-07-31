@@ -12,6 +12,7 @@ import ru.mirea.docker.elitetickets.enums.TypeReg;
 import ru.mirea.docker.elitetickets.enums.UserRole;
 
 import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Map;
@@ -46,6 +47,13 @@ public class UserModel implements UserDetails {
                 .password(user.getPassword())
                 .provider(user.getRegType())
                 .build();
+    }
+
+    public String getFormattedBirthDate(){
+        if(birthDate == null){
+            return "N/A";
+        }
+        return birthDate.format(DateTimeFormatter.ofPattern("dd.MM.yyyy"));
     }
 
 /*

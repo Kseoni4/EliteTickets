@@ -1,5 +1,6 @@
 package ru.mirea.docker.elitetickets.configurations;
 
+import com.vaadin.flow.spring.security.VaadinWebSecurity;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -10,8 +11,12 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.DefaultSecurityFilterChain;
+import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.HttpStatusEntryPoint;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.security.web.servlet.util.matcher.MvcRequestMatcher;
+import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
+import org.springframework.web.servlet.handler.HandlerMappingIntrospector;
 import ru.mirea.docker.elitetickets.services.security.UserDetailsServiceImpl;
 import ru.mirea.docker.elitetickets.services.security.filter.ExceptionFilter;
 import ru.mirea.docker.elitetickets.services.security.filter.JwtFilter;
@@ -19,7 +24,7 @@ import ru.mirea.docker.elitetickets.services.security.filter.JwtFilter;
 @Configuration
 @EnableWebSecurity
 @RequiredArgsConstructor
-public class SecurityConfig {
+public class SecurityConfig extends VaadinWebSecurity {
 
     private final JwtFilter jwtFilter;
 
@@ -33,11 +38,16 @@ public class SecurityConfig {
         );
     }*/
 
+    @Bean
+    MvcRequestMatcher.Builder mvc(HandlerMappingIntrospector introspector) {
+        return new MvcRequestMatcher.Builder(introspector);
+    }
+
 
     @Bean
-    public DefaultSecurityFilterChain securityFilterChain(HttpSecurity http,
-                                                          UserDetailsServiceImpl userDetailsService) throws Exception {
-        return http
+    public SecurityFilterChain filterChain(HttpSecurity http,
+                                                   UserDetailsServiceImpl userDetailsService, MvcRequestMatcher.Builder mvc) throws Exception {
+        http
                 // Отключаем аутентификацию по HTTP
                 .httpBasic(AbstractHttpConfigurer::disable)
                 // Отключаем проверку CSRF токена
@@ -50,26 +60,25 @@ public class SecurityConfig {
                 )
                 // Устанавливаем политики доступа к end-point-ам
                 .authorizeHttpRequests(config ->
-                        config.requestMatchers("/v1/orders").authenticated()
-                            .requestMatchers("/error**").permitAll()
-                            .requestMatchers("/error/**").permitAll()
-                            .requestMatchers("/swagger-ui/**").permitAll()
-                            .requestMatchers("/v3/api-docs/**").permitAll()
-                            .requestMatchers(HttpMethod.POST,"/v1/auth/**").permitAll()
-                                .requestMatchers("/static/**").permitAll()
-                                .requestMatchers("/login/**").permitAll()
-                                .requestMatchers("/login**").permitAll()
-                                .requestMatchers("/ping").permitAll()
-                            .anyRequest().authenticated()
+                        config.requestMatchers(mvc.pattern("/VAADIN/**")).permitAll()
+                                .requestMatchers(AntPathRequestMatcher.antMatcher("/v1/orders")).authenticated()
+                                .requestMatchers(mvc.pattern("/orders")).permitAll()
+                            .requestMatchers(new AntPathRequestMatcher("/error**")).permitAll()
+                            .requestMatchers(new AntPathRequestMatcher("/error/**")).permitAll()
+                            .requestMatchers(new AntPathRequestMatcher("/swagger-ui/**")).permitAll()
+                            .requestMatchers(new AntPathRequestMatcher("/v3/api-docs/**")).permitAll()
+                            .requestMatchers(new AntPathRequestMatcher("/v1/auth/**", HttpMethod.POST.name())).permitAll()
+                                .requestMatchers(mvc.pattern("/static/**")).permitAll()
+                                .requestMatchers(new AntPathRequestMatcher("/login/**")).permitAll()
+                                .requestMatchers(new AntPathRequestMatcher("/login**")).permitAll()
+                                .requestMatchers(new AntPathRequestMatcher("/ping")).permitAll()
                 )
                 // Отключаем логин через форму
                 .formLogin(AbstractHttpConfigurer::disable)
                 // Добавляем JWT Filter перед фильтром аутентификации по Username/Password
                 .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class)
-                .addFilterBefore(exceptionFilter, JwtFilter.class)
-                // Инициализируем полученный объект политик и возвращаем из метода
-                .build();
-
+                .addFilterBefore(exceptionFilter, JwtFilter.class);
+        return super.filterChain(http);
     }
 
 }
